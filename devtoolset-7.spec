@@ -9,7 +9,7 @@
 Summary: Package that installs %scl
 Name: %scl_name
 Version: 7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: Applications/File
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -259,6 +259,14 @@ install -p -m 644 %{?scl_name}.7 %{buildroot}%{_mandir}/man7/
 
 %files perftools
 
+%files all
+
+%files llvm
+
+%files rust
+
+%files go
+
 %if 0%{?rhel} >= 7
 %files dockerfiles
 %{dockerfiledir}
@@ -281,6 +289,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Wed Jun  7 2017 Marek Polacek <polacek@redhat.com> - 7.0-2
+- update %files for the recently added subpackages
+
 * Wed Jun  7 2017 Marek Polacek <polacek@redhat.com> - 7.0-1
 - add devtoolset-7-{go,llvm,rust,all} subpackages
 
