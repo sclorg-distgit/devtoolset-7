@@ -9,7 +9,7 @@
 Summary: Package that installs %scl
 Name: %scl_name
 Version: 7.0
-Release: 0%{?dist}
+Release: 1%{?dist}
 License: GPLv2+
 Group: Applications/File
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -25,7 +25,7 @@ Source0: README
 Source1: devtoolset-6-toolchain-docker-%{df_toolchain_s}.tar.bz2
 Source2: devtoolset-6-perftools-docker-%{df_perftools_s}.tar.bz2
 
-# The base package must require everything in the collection
+# The base package requires just the toolchain and the perftools.
 Requires: %{scl_prefix}toolchain %{scl_prefix}perftools
 Obsoletes: %{name} < %{version}-%{release}
 
@@ -93,6 +93,48 @@ Requires: gcc
 This package provides a set of example Dockerfiles that can be used
 with Red Hat Developer Toolset.  Use these examples to stand up
 test environments using the Docker container engine.
+
+%package all
+Summary: Package shipping all available toolsets.
+Group: Applications/File
+Requires: %{scl_prefix}runtime
+Requires: %{scl_prefix}toolchain %{scl_prefix}perftools
+Requires: rust-toolset-7 llvm-toolset-7 go-toolset-7
+Obsoletes: %{name}-all < %{version}-%{release}
+
+%description all
+Package shipping all available toolsets (GCC toolchain, perftools,
+Rust, LLVM, Go).
+
+%package rust
+Summary: Package shipping the Rust toolset
+Group: Applications/File
+Requires: %{scl_prefix}runtime
+Requires: rust-toolset-7
+Obsoletes: %{name}-rust < %{version}-%{release}
+
+%description rust
+Package shipping the Rust toolset.
+
+%package llvm
+Summary: Package shipping the LLVM toolset
+Group: Applications/File
+Requires: %{scl_prefix}runtime
+Requires: llvm-toolset-7
+Obsoletes: %{name}-llvm < %{version}-%{release}
+
+%description llvm
+Package shipping the LLVM toolset.
+
+%package go
+Summary: Package shipping the Go toolset
+Group: Applications/File
+Requires: %{scl_prefix}runtime
+Requires: go-toolset-7
+Obsoletes: %{name}-go < %{version}-%{release}
+
+%description go
+Package shipping the Go toolset.
 
 %prep
 %setup -c -T -a 1 -a 2
@@ -239,5 +281,8 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Wed Jun  7 2017 Marek Polacek <polacek@redhat.com> - 7.0-1
+- add devtoolset-7-{go,llvm,rust,all} subpackages
+
 * Thu May 25 2017 Marek Polacek <polacek@redhat.com> - 7.0-0
 - initial version, with old dockerfiles (#1455129)
