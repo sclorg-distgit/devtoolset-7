@@ -1,0 +1,35 @@
+Package %{scl_name} is the main package for Red Hat Developer
+Toolset 4.  By installing the %{scl_name} package, you will get
+the working set of packages that are included in Red Hat Developer
+Toolset 4.  It is possible to install only certain components,
+such as an IDE or the toolchain packages used to develop and debug
+applications, since this package contains a number of meta packages.
+These are: %{scl_name}-ide, which includes Integrated Development
+Environment; %{scl_name}-perftools, which includes performance
+monitoring tools; and %{scl_name}-toolchain, which includes
+development and debugging tools.
+
+Usage: scl enable %{scl} <command>
+
+Red Hat Developer Toolset allows you to build and execute applications
+which are not located in the filesystem root hierarchy, but are
+stored in an alternative location, which is %{_scl_root} in case
+of the %{scl_name} collection.
+
+Examples:
+scl enable %{scl_name} 'command --arg'
+  Run a specific command with the argument --arg within the %{scl_name}
+  Red Hat Developer Toolset environment.
+
+scl enable %{scl_name} 'gcc'
+  Run GCC from the %{scl_name} Red Hat Developer Toolset.
+
+scl enable %{scl_name} 'bash'
+  Run an interactive shell wherein the %{scl_name} software collection
+  is enabled.
+
+scl enable %{scl_name} 'man gcc'
+  Show man pages for the gcc command, which is a part of the
+  %{scl_name} Red Hat Developer Toolset.
+
+Report bugs to <http://bugzilla.redhat.com>.
