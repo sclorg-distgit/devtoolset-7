@@ -9,7 +9,7 @@
 Summary: Package that installs %scl
 Name: %scl_name
 Version: 7.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2+
 Group: Applications/File
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -100,7 +100,10 @@ Group: Applications/File
 Requires: %{scl_prefix}runtime
 Requires: %{scl_prefix}toolchain %{scl_prefix}perftools
 %if 0%{?rhel} >= 7
-Requires: rust-toolset-7 llvm-toolset-7 go-toolset-7
+Requires: rust-toolset-7 llvm-toolset-7
+%ifnarch ppc64
+Requires: go-toolset-7
+%endif
 %endif
 Obsoletes: %{name}-all < %{version}-%{release}
 
@@ -268,7 +271,9 @@ install -p -m 644 %{?scl_name}.7 %{buildroot}%{_mandir}/man7/
 
 %files rust
 
+%ifnarch ppc64
 %files go
+%endif
 
 %files dockerfiles
 %{dockerfiledir}
@@ -291,6 +296,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Mon Jul  3 2017 Marek Polacek <polacek@redhat.com> - 7.0-5
+- the Go toolset is not available on ppc64 (#1466198)
+
 * Mon Jul  3 2017 Marek Polacek <polacek@redhat.com> - 7.0-4
 - drop devtoolset-7-{go,llvm,rust} on rhel6 and don't require
   them in -all on rhel6 (#1467194)
