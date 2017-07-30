@@ -9,7 +9,7 @@
 Summary: Package that installs %scl
 Name: %scl_name
 Version: 7.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: Applications/File
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -289,6 +289,9 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Thu Jun 15 2017 Marek Polacek <polacek@redhat.com> - 7.0-3
+- bump Release for rebuild
+
 * Wed Jun  7 2017 Marek Polacek <polacek@redhat.com> - 7.0-2
 - update %files for the recently added subpackages
 
