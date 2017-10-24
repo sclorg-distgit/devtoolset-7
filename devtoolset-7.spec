@@ -1,7 +1,7 @@
 %global scl devtoolset-7
 %scl_package %scl
-%global df_toolchain d0e8f8ad24f38c3ad19cfb47cf1ba488a93de60d
-%global df_perftools df416ac0951d00c1a35ef19bbef6d2f4af7c5883
+%global df_toolchain 7356c45f3d7ed9e1def541d3d3ef6b1d51e92f29
+%global df_perftools 1c51b6475a2c0a59def0c4738b4f865979c00b3f
 %global df_toolchain_s %(c=%{df_toolchain}; echo ${c:0:7})
 %global df_perftools_s %(c=%{df_perftools}; echo ${c:0:7})
 %global dockerfiledir %{_datadir}/%{scl_prefix}dockerfiles
@@ -9,21 +9,21 @@
 Summary: Package that installs %scl
 Name: %scl_name
 Version: 7.0
-Release: 5%{?dist}
+Release: 8%{?dist}
 License: GPLv2+
 Group: Applications/File
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0: README
 # The source for this package was pulled from upstream's git.  Use the
 # following commands to generate the tarball:
-# git clone git://pkgs.devel.redhat.com/rpms/devtoolset-6-toolchain-docker -b devtoolset-6.0-rhel-7
-# rm -rf devtoolset-6-toolchain-docker/.git{,ignore}
-# tar cf - devtoolset-6-toolchain-docker | bzip2 -9 > devtoolset-6-toolchain-docker-%{df_toolchain_s}.tar.bz2
-# git clone git://pkgs.devel.redhat.com/rpms/devtoolset-6-perftools-docker -b devtoolset-6.0-rhel-7
-# rm -rf devtoolset-6-perftools-docker/.git{,ignore}
-# tar cf - devtoolset-6-perftools-docker | bzip2 -9 > devtoolset-6-perftools-docker-%{df_perftools_s}.tar.bz2
-Source1: devtoolset-6-toolchain-docker-%{df_toolchain_s}.tar.bz2
-Source2: devtoolset-6-perftools-docker-%{df_perftools_s}.tar.bz2
+# git clone git://pkgs.devel.redhat.com/rpms/devtoolset-7-toolchain-docker -b devtoolset-7.0-rhel-7
+# rm -rf devtoolset-7-toolchain-docker/.git{,ignore}
+# tar cf - devtoolset-7-toolchain-docker | bzip2 -9 > devtoolset-7-toolchain-docker-%{df_toolchain_s}.tar.bz2
+# git clone git://pkgs.devel.redhat.com/rpms/devtoolset-7-perftools-docker -b devtoolset-7.0-rhel-7
+# rm -rf devtoolset-7-perftools-docker/.git{,ignore}
+# tar cf - devtoolset-7-perftools-docker | bzip2 -9 > devtoolset-7-perftools-docker-%{df_perftools_s}.tar.bz2
+Source1: devtoolset-7-toolchain-docker-%{df_toolchain_s}.tar.bz2
+Source2: devtoolset-7-perftools-docker-%{df_perftools_s}.tar.bz2
 
 # The base package requires just the toolchain and the perftools.
 Requires: %{scl_prefix}toolchain %{scl_prefix}perftools
@@ -87,59 +87,11 @@ Package shipping performance tools (systemtap, oprofile)
 %package dockerfiles
 Summary: Package shipping Dockerfiles for Developer Toolset
 Group: Applications/File
-Requires: gcc
 
 %description dockerfiles
 This package provides a set of example Dockerfiles that can be used
 with Red Hat Developer Toolset.  Use these examples to stand up
 test environments using the Docker container engine.
-
-%package all
-Summary: Package shipping all available toolsets.
-Group: Applications/File
-Requires: %{scl_prefix}runtime
-Requires: %{scl_prefix}toolchain %{scl_prefix}perftools
-%if 0%{?rhel} >= 7
-Requires: rust-toolset-7 llvm-toolset-7
-%ifnarch ppc64
-Requires: go-toolset-7
-%endif
-%endif
-Obsoletes: %{name}-all < %{version}-%{release}
-
-%description all
-Package shipping all available toolsets (GCC toolchain, perftools,
-Rust, LLVM, Go).
-
-%package rust
-Summary: Package shipping the Rust toolset
-Group: Applications/File
-Requires: %{scl_prefix}runtime
-Requires: rust-toolset-7
-Obsoletes: %{name}-rust < %{version}-%{release}
-
-%description rust
-Package shipping the Rust toolset.
-
-%package llvm
-Summary: Package shipping the LLVM toolset
-Group: Applications/File
-Requires: %{scl_prefix}runtime
-Requires: llvm-toolset-7
-Obsoletes: %{name}-llvm < %{version}-%{release}
-
-%description llvm
-Package shipping the LLVM toolset.
-
-%package go
-Summary: Package shipping the Go toolset
-Group: Applications/File
-Requires: %{scl_prefix}runtime
-Requires: go-toolset-7
-Obsoletes: %{name}-go < %{version}-%{release}
-
-%description go
-Package shipping the Go toolset.
 
 %prep
 %setup -c -T -a 1 -a 2
@@ -236,7 +188,7 @@ install -d -m 755 %{buildroot}%{_libdir}/perl5/vendor_perl/auto
 %if 0%{?rhel} >= 7
 install -d %{buildroot}%{dockerfiledir}
 install -d -p -m 755 %{buildroot}%{dockerfiledir}/rhel7
-collections="devtoolset-6-toolchain-docker devtoolset-6-perftools-docker"
+collections="devtoolset-7-toolchain-docker devtoolset-7-perftools-docker"
 for d in $collections; do
   install -d -p -m 755 %{buildroot}%{dockerfiledir}/rhel7/$d
   cp -a $d %{buildroot}%{dockerfiledir}/rhel7
@@ -264,17 +216,7 @@ install -p -m 644 %{?scl_name}.7 %{buildroot}%{_mandir}/man7/
 
 %files perftools
 
-%files all
-
 %if 0%{?rhel} >= 7
-%files llvm
-
-%files rust
-
-%ifnarch ppc64
-%files go
-%endif
-
 %files dockerfiles
 %{dockerfiledir}
 %endif
@@ -296,6 +238,15 @@ if [ $1 = 0 ]; then
 fi
 
 %changelog
+* Fri Oct 06 2017 Marek Polacek <polacek@redhat.com> - 7.0-8
+- don't Require gcc for dockerfiles (#1499232)
+
+* Thu Aug 24 2017 Marek Polacek <polacek@redhat.com> - 7.0-7
+- drop devtoolset-7-{all,go,llvm,rust}
+
+* Tue Aug  8 2017 Marek Polacek <polacek@redhat.com> - 7.0-6
+- update dockerfiles
+
 * Mon Jul  3 2017 Marek Polacek <polacek@redhat.com> - 7.0-5
 - the Go toolset is not available on ppc64 (#1466198)
 
